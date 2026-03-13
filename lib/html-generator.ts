@@ -52,7 +52,8 @@ export function renderComponentHTML(
       return `<img src="${p.src}" alt="${p.alt}" style="width: ${p.width}%; max-width: ${globalSettings.width === "580" ? "300" : "520"}px; height; auto; margin: ${p.marginTop}px auto ${p.marginBottom}px; border: 1px solid ${isDarkMode ? "white" : "black"};"/>`;
 
     case "image-styled":
-      return `<img src="${p.src}" alt="${p.alt}" style="width: ${p.width}%; max-width: calc(100% - 80px); height: auto; object-fit: cover; filter: grayscale(${p.coloredImage === "true" ? "0%" : "90%"}); -webkit-mask-image: url('https://2img.net/image.noelshack.com/fichiers/2025/50/6/1765605039-output-onlinepngtools.png'); mask-image: url('https://2img.net/image.noelshack.com/fichiers/2025/50/6/1765605039-output-onlinepngtools.png'); -webkit-mask-size: cover; mask-size: cover; -webkit-mask-position: center; mask-position: center; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; -webkit-mask-size: 99%; mask-size: 99%; display: block; margin: ${p.marginTop}px auto ${p.marginBottom}px;">`;
+      const toPercentage = 232 * (Number(p.width) / 100);
+      return `<img src="${p.src}" alt="${p.alt}" style="width: ${p.width}%; max-width: calc(100% - 80px); height: 100%; max-height: ${toPercentage}px; object-fit: cover; filter: grayscale(${p.coloredImage === "true" ? "0%" : "90%"}); -webkit-mask-image: url('https://2img.net/image.noelshack.com/fichiers/2025/50/6/1765605039-output-onlinepngtools.png'); mask-image: url('https://2img.net/image.noelshack.com/fichiers/2025/50/6/1765605039-output-onlinepngtools.png'); -webkit-mask-size: cover; mask-size: cover; -webkit-mask-position: center; mask-position: center; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; -webkit-mask-size: 99%; mask-size: 99%; display: block; margin: ${p.marginTop}px auto ${p.marginBottom}px;">`;
 
     case "speech": {
       const [characterColor, characterKey] = (
