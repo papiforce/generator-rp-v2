@@ -11,13 +11,9 @@ import {
   getDefinition,
 } from "@/lib/template-components";
 import { arrayMove } from "@dnd-kit/sortable";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 
 export default function TemplateBuilder() {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
   const [modalOpen, setModalOpen] = useState(true);
   const [templateName, setTemplateName] = useState("");
   const [components, setComponents] = useState<TemplateComponentInstance[]>([]);
@@ -110,15 +106,15 @@ export default function TemplateBuilder() {
   const updateUrlParam = useCallback(
     (name: string) => {
       const slug = slugify(name);
-      const params = new URLSearchParams(searchParams.toString());
+      const params = new URLSearchParams(window.location.search);
       if (slug) {
         params.set("save", slug);
       } else {
         params.delete("save");
       }
-      router.replace(`${pathname}?${params.toString()}`);
+      window.history.replaceState(null, "", `${window.location.pathname}?${params.toString()}`);
     },
-    [router, pathname, searchParams],
+    [],
   );
 
   const renameTemplate = useCallback(
@@ -174,7 +170,8 @@ export default function TemplateBuilder() {
 
   // Auto-load from URL query param
   useEffect(() => {
-    const saveSlug = searchParams.get("save");
+    const params = new URLSearchParams(window.location.search);
+    const saveSlug = params.get("save");
     if (saveSlug) {
       const data = loadSave(saveSlug);
       if (data) {
@@ -184,7 +181,7 @@ export default function TemplateBuilder() {
         setModalOpen(false);
       }
     }
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <>
