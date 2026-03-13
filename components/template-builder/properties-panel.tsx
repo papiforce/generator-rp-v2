@@ -1,5 +1,6 @@
 "use client";
 
+import TextColorEditor from "@/components/template-builder/text-color-editor";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,7 +12,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { Textarea } from "@/components/ui/textarea";
 import { generateFullHTML } from "@/lib/html-generator";
 import { saveCurrent } from "@/lib/store";
 import {
@@ -19,7 +19,7 @@ import {
   getDefinition,
 } from "@/lib/template-components";
 import { Check, Copy, Save } from "lucide-react";
-import { useRef, useState } from "react";
+import { useState } from "react";
 
 function formatHTML(html: string): string {
   const blockTags = [
@@ -282,92 +282,6 @@ function ComponentProperties({
           }
         </div>
       ))}
-    </div>
-  );
-}
-
-const COLOR_OPTIONS = [
-  { value: "#9E3333", label: "Tyr" },
-  { value: "#9E4FE3", label: "Sonya" },
-  { value: "#FF5F15", label: "Jeshaay" },
-  { value: "#3BB3B5", label: "Jeshaay (Zoan)" },
-  { value: "#DEB887", label: "Lem" },
-  { value: "#990099", label: "Nico Eliza" },
-  { value: "#BD0202", label: "Velvet" },
-  { value: "#EB635C", label: "Loreleï" },
-  { value: "#DBA029", label: "PNJ - Civil" },
-  { value: "#EB2F2F", label: "PNJ - Pirate" },
-  { value: "#3774ED", label: "PNJ - Marine" },
-  { value: "#24C6E3", label: "PNJ - Cipher Pol" },
-  { value: "#9E4FE3", label: "PNJ - Corsaire" },
-  { value: "#2ABD53", label: "PNJ - Chasseur de primes" },
-  { value: "#754D70", label: "PNJ - Atout révolutionnaire" },
-  { value: "#998997", label: "PNJ - Révolutionnaire" },
-];
-
-function TextColorEditor({
-  value,
-  onChange,
-  withoutColor = false,
-}: {
-  value: string;
-  onChange: (value: string) => void;
-  withoutColor?: boolean;
-}) {
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const [selectKey, setSelectKey] = useState(0);
-
-  const applyColor = (color: string) => {
-    const textarea = textareaRef.current;
-    if (!textarea) return;
-
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
-    if (start === end) return; // Aucun texte sélectionné
-
-    const selectedText = value.slice(start, end);
-    const wrapped = `<span style="color: ${color}; font-weight: bold;">${selectedText}</span>`;
-    const newValue = value.slice(0, start) + wrapped + value.slice(end);
-    onChange(newValue);
-    setSelectKey((k) => k + 1);
-  };
-
-  return (
-    <div className="flex flex-col gap-1.5">
-      {!withoutColor && (
-        <div className="flex gap-1.5">
-          <Select key={selectKey} onValueChange={applyColor}>
-            <SelectTrigger className="h-8 text-xs flex-1">
-              <SelectValue placeholder="Appliquer une couleur" />
-            </SelectTrigger>
-            <SelectContent>
-              {COLOR_OPTIONS.map((opt) => (
-                <SelectItem key={opt.label} value={opt.value}>
-                  <span className="flex items-center gap-2">
-                    <span
-                      className="inline-block h-3 w-3 rounded-full shrink-0"
-                      style={{ backgroundColor: opt.value }}
-                    />
-                    {opt.label}
-                  </span>
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <input
-            type="color"
-            className="h-8 w-8 rounded border p-0.5 cursor-pointer shrink-0"
-            onChange={(e) => applyColor(e.target.value)}
-          />
-        </div>
-      )}
-
-      <Textarea
-        ref={textareaRef}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        rows={4}
-      />
     </div>
   );
 }
