@@ -11,7 +11,13 @@ import {
   getDefinition,
 } from "@/lib/template-components";
 import { arrayMove } from "@dnd-kit/sortable";
-import { Eye, PanelLeftClose, PanelLeftOpen, PanelRightClose, PanelRightOpen } from "lucide-react";
+import {
+  Eye,
+  PanelLeftClose,
+  PanelLeftOpen,
+  PanelRightClose,
+  PanelRightOpen,
+} from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { Button } from "../ui/button";
 
@@ -222,14 +228,20 @@ export default function TemplateBuilder() {
           <button
             onClick={() => setLeftOpen((v) => !v)}
             className="shrink-0 w-6 flex items-center justify-center border-r hover:bg-muted transition-colors cursor-pointer"
-            title={leftOpen ? "Masquer les composants" : "Afficher les composants"}
+            title={
+              leftOpen ? "Masquer les composants" : "Afficher les composants"
+            }
           >
-            {leftOpen ? <PanelLeftClose className="h-4 w-4" /> : <PanelLeftOpen className="h-4 w-4" />}
+            {leftOpen ?
+              <PanelLeftClose className="h-4 w-4" />
+            : <PanelLeftOpen className="h-4 w-4" />}
           </button>
 
           {/* Left column - Component list */}
           {leftOpen && (
-            <aside className={`border-r p-3 overflow-y-auto shrink-0 ${rightOpen ? "w-64" : "w-1/3"}`}>
+            <aside
+              className={`border-r p-3 overflow-y-auto shrink-0 ${rightOpen ? "w-64" : "w-1/3"}`}
+            >
               <ComponentList onAddComponent={addComponent} />
             </aside>
           )}
@@ -249,7 +261,9 @@ export default function TemplateBuilder() {
 
           {/* Right column - Properties panel */}
           {rightOpen && (
-            <aside className={`border-l shrink-0 flex flex-col overflow-hidden ${leftOpen ? "w-72" : "w-1/3"}`}>
+            <aside
+              className={`border-l shrink-0 flex flex-col overflow-hidden ${leftOpen ? "w-72" : "w-1/3"}`}
+            >
               <PropertiesPanel
                 selectedComponent={selectedComponent}
                 components={components}
@@ -266,9 +280,13 @@ export default function TemplateBuilder() {
           <button
             onClick={() => setRightOpen((v) => !v)}
             className="shrink-0 w-6 flex items-center justify-center border-l hover:bg-muted transition-colors cursor-pointer"
-            title={rightOpen ? "Masquer les propriétés" : "Afficher les propriétés"}
+            title={
+              rightOpen ? "Masquer les propriétés" : "Afficher les propriétés"
+            }
           >
-            {rightOpen ? <PanelRightClose className="h-4 w-4" /> : <PanelRightOpen className="h-4 w-4" />}
+            {rightOpen ?
+              <PanelRightClose className="h-4 w-4" />
+            : <PanelRightOpen className="h-4 w-4" />}
           </button>
         </div>
       </div>

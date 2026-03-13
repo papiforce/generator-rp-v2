@@ -33,12 +33,14 @@ interface TextColorEditorProps {
   value: string;
   onChange: (value: string) => void;
   withoutColor?: boolean;
+  fontSize?: string;
 }
 
 export default function TextColorEditor({
   value,
   onChange,
   withoutColor = false,
+  fontSize,
 }: TextColorEditorProps) {
   const editorRef = useRef<HTMLDivElement>(null);
   const savedRangeRef = useRef<Range | null>(null);
@@ -78,11 +80,29 @@ export default function TextColorEditor({
     }
   }, []);
 
+  const sanitizeParagraphs = useCallback(
+    (container: HTMLElement) => {
+      container.querySelectorAll("p").forEach((p) => {
+        p.style.removeProperty("font-size");
+        p.style.removeProperty("font-weight");
+        p.style.removeProperty("font-family");
+        p.style.removeProperty("color");
+        p.style.setProperty("margin-bottom", "0");
+        // Clean empty style attribute
+        if (!p.getAttribute("style")?.trim()) {
+          p.removeAttribute("style");
+        }
+      });
+    },
+    [fontSize],
+  );
+
   const emitChange = useCallback(() => {
     if (!editorRef.current) return;
+    sanitizeParagraphs(editorRef.current);
     isInternalUpdate.current = true;
     onChange(editorRef.current.innerHTML);
-  }, [onChange]);
+  }, [onChange, sanitizeParagraphs]);
 
   const handleInput = useCallback(() => {
     emitChange();
@@ -241,7 +261,7 @@ export default function TextColorEditor({
 
   const applyColor = useCallback(
     (color: string) => {
-      applyStyle({ color, "font-weight": "bold" });
+      applyStyle({ color });
       setSelectKey((k) => k + 1);
     },
     [applyStyle],
@@ -320,7 +340,7 @@ export default function TextColorEditor({
         onInput={handleInput}
         onMouseUp={saveSelection}
         onKeyUp={saveSelection}
-        className="min-h-24 rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+        className="min-h-24 max-h-90 overflow-y-scroll rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
       />
     </div>
   );

@@ -99,7 +99,6 @@ export default function PropertiesPanel({
   globalSettings,
   onUpdateComponent,
   onUpdateGlobalSettings,
-  onRenameTemplate,
 }: PropertiesPanelProps) {
   const [copyLabel, setCopyLabel] = useState<string | null>(null);
   const [saveLabel, setSaveLabel] = useState<string | null>(null);
@@ -134,6 +133,7 @@ export default function PropertiesPanel({
         {selectedComponent ?
           <ComponentProperties
             component={selectedComponent}
+            globalSettings={globalSettings}
             onUpdate={onUpdateComponent}
           />
         : <GlobalProperties
@@ -179,9 +179,11 @@ export default function PropertiesPanel({
 
 function ComponentProperties({
   component,
+  globalSettings,
   onUpdate,
 }: {
   component: TemplateComponentInstance;
+  globalSettings: Record<string, string>;
   onUpdate: (id: string, key: string, value: string) => void;
 }) {
   const def = getDefinition(component.type);
@@ -254,6 +256,7 @@ function ComponentProperties({
               withoutColor={
                 propDef.without ? propDef.without.includes("color") : false
               }
+              fontSize={globalSettings.fontSize}
             />
           : <Input
               id={propDef.key}

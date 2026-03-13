@@ -132,11 +132,11 @@ export function renderComponentHTML(
         globalSettings.fontFamily === "montserrat" ?
           Number(globalSettings.fontSize) - 1
         : Number(globalSettings.fontSize)
-      }px; font-weight: 400; padding-bottom: 40px; margin: 32px 0 0 0;">Bourbon | バーボン</p>${
+      }px; font-weight: 400; padding-bottom: 40px; margin: ${p.marginTop || "32"}px 0 0 0;">Bourbon | バーボン</p>${
         p.logo !== "none" ?
           `<img src="${p.logo}" alt="jolly roger" style="position: absolute; left: 16px; bottom: 16px; transform: rotate(-17deg); width: ${
-            p.participants !== "" ? "64px" : "48px"
-          }; border-radius: 100%; ${
+            p.size || "64"
+          }px; border-radius: 100%; ${
             p.logo === "jr-gray" ? "filter: grayscale(1);" : ""
           }" />`
         : ""
@@ -157,15 +157,6 @@ export function generateFullHTML(
   const globalStyle = `max-width: ${globalSettings.width}px; background: ${
     isDarkMode ? "oklch(0.2223 0.006 271.1393)" : "#f2f2f2"
   }; margin: 0 auto; color: ${isDarkMode ? "#fff" : "#000"};`;
-
-  // const theme =
-  //   isDarkMode ?
-  //     `.dark .codebox { background-color: #222327 !important; border: 1px solid #33353a !important; padding: 12px !important; } .dark .spoiler_title { color: #fff !important; font-size: ${globalSettings.fontSize}px !important; } .dark .spoiler_content { background-color: #2a2c33 !important; color: #fff !important; font-size: ${
-  //       Number(globalSettings.fontSize) - 1
-  //     }px !important; font-weight: 500; }`
-  //   : `.light .codebox { background-color: #f5f5f5 !important; border: 1px solid #e7e7ee !important; padding: 12px !important; } .light .spoiler_title { color: #000 !important; font-size: ${globalSettings.fontSize}px !important; } .light .spoiler_content { background-color: #eaeaeaff !important; color: #000 !important; font-weight: 500; font-size: ${
-  //       Number(globalSettings.fontSize) - 1
-  //     }px !important; }`;
 
   const withFirstLetterBig =
     globalSettings.firstLetter ?
@@ -194,7 +185,7 @@ export function generateFullHTML(
     : "") +
     footerHTML.join("\n");
 
-  return `<style>@import url('@import url('https://fonts.googleapis.com/css2?${isMontserrat ? "family=Montserrat:ital,wght@0,100..900;1,100..900&" : "family=Noto+Serif+JP:wght@200..900&"}family=Petrona:ital,wght@0,100..900;1,100..900&display=swap');'); .petrona { font-family: 'Petrona', serif; font-optical-sizing: auto; font-style: normal; } ${isMontserrat ? ".montserrat { font-family: 'Montserrat', sans-serif; font-optical-sizing: auto; font-style: normal; }" : ""} ${!isMontserrat ? ".noto-serif-jp { font-family: 'Noto Serif JP', serif; font-optical-sizing: auto; font-style: normal; }" : ""} .contentWrapper { margin: 32px 40px 56px; display: flex; flex-direction: column; } ${withFirstLetterBig} .spoiler-content img { width: 100%; max-width: calc(100% - 48px); max-height: 300px; margin: 0 auto; } @media (max-width: 720px) { .contentWrapper { margin: 8px 16px 56px; } .separator { width: 80%; } }</style><!--
+  return `<style>@import url('@import url('https://fonts.googleapis.com/css2?${isMontserrat ? "family=Montserrat:ital,wght@0,100..900;1,100..900&" : "family=Noto+Serif+JP:wght@200..900&"}family=Petrona:ital,wght@0,100..900;1,100..900&display=swap');'); .petrona { font-family: 'Petrona', serif; font-optical-sizing: auto; font-style: normal; } ${isMontserrat ? ".montserrat { font-family: 'Montserrat', sans-serif; font-optical-sizing: auto; font-style: normal; }" : ""} ${!isMontserrat ? ".noto-serif-jp { font-family: 'Noto Serif JP', serif; font-optical-sizing: auto; font-style: normal; }" : ""} .contentWrapper { margin: 0px 40px !important; display: flex; flex-direction: column; } ${withFirstLetterBig} .spoiler-content img { width: 100%; max-width: calc(100% - 48px); max-height: 300px; margin: 0 auto; } p { font-size: ${globalSettings.fontSize}px !important; } @media (max-width: 720px) { .contentWrapper { margin: 0px 16px !important; } .separator { width: 80%; } }</style><!--
 
 --><div class="${globalSettings.fontFamily}" style="position: relative; ${globalStyle}">${bodyContent}</div>`;
 }

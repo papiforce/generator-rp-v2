@@ -449,31 +449,22 @@ export const COMPONENT_DEFINITIONS: TemplateComponentDefinition[] = [
           { label: "Aucun", value: "none" },
         ],
       },
-      // {
-      //   key: "text",
-      //   label: "Texte du footer",
-      //   type: "text",
-      //   defaultValue: "© 2026 Mon Entreprise. Tous droits réservés.",
-      // },
-      // {
-      //   key: "backgroundColor",
-      //   label: "Couleur de fond",
-      //   type: "color",
-      //   defaultValue: "#1a1a2e",
-      // },
-      // {
-      //   key: "textColor",
-      //   label: "Couleur du texte",
-      //   type: "color",
-      //   defaultValue: "#ffffff",
-      // },
-      // {
-      //   key: "align",
-      //   label: "Alignement",
-      //   type: "select",
-      //   defaultValue: "center",
-      //   options: ["left", "center", "right"],
-      // },
+      {
+        key: "size",
+        label: "Taille du Jolly Roger",
+        type: "select",
+        defaultValue: "64",
+        options: [
+          { label: "Grand", value: "64" },
+          { label: "Petit", value: "48" },
+        ],
+      },
+      {
+        key: "marginTop",
+        label: "Espacement haut (px)",
+        type: "number",
+        defaultValue: "32",
+      },
     ],
   },
 ];
