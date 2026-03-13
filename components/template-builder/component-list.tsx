@@ -23,6 +23,17 @@ function DraggableItem({
   def: TemplateComponentDefinition;
   onAddComponent: (type: string) => void;
 }) {
+  const handleFixed = (fixed: TemplateComponentDefinition) => {
+    switch (fixed) {
+      case "last" as unknown as TemplateComponentDefinition:
+        return "Dernier";
+      case "draft" as unknown as TemplateComponentDefinition:
+        return "Beta";
+      default:
+        return "Premier";
+    }
+  };
+
   return (
     <div
       draggable
@@ -37,7 +48,7 @@ function DraggableItem({
       <span>{def.label}</span>
       {def.fixed && (
         <span className="ml-auto text-[10px] text-muted-foreground bg-muted px-1.5 py-0.5 rounded">
-          {def.fixed === "first" ? "Premier" : "Dernier"}
+          {handleFixed(def.fixed as unknown as TemplateComponentDefinition)}
         </span>
       )}
     </div>

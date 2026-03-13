@@ -131,15 +131,13 @@ export default function StartupModal({
                       </div>
                     : <div
                         key={save.slug}
-                        className="flex items-center gap-2 p-2.5 rounded-md border hover:bg-accent transition-colors group"
+                        onClick={() => onLoadSave(save.slug)}
+                        className="flex items-center justify-between gap-2 p-2.5 cursor-pointer rounded-md border hover:bg-accent transition-colors group"
                       >
-                        <button
-                          onClick={() => onLoadSave(save.slug)}
-                          className="flex items-center gap-2 flex-1 min-w-0 text-left text-sm cursor-pointer"
-                        >
+                        <div className="flex items-center gap-2 flex-1 min-w-0 text-left">
                           <FolderOpen className="h-4 w-4 text-muted-foreground shrink-0" />
-                          <span className="truncate">{save.name}</span>
-                        </button>
+                          <span className="truncate text-sm">{save.name}</span>
+                        </div>
                         <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
                           <button
                             onClick={(e) => {

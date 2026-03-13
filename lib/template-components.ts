@@ -21,7 +21,7 @@ export interface TemplateComponentDefinition {
   type: string;
   label: string;
   category: string;
-  fixed?: "first" | "last";
+  fixed?: "first" | "draft" | "last";
   properties: PropertyDefinition[];
 }
 
@@ -146,6 +146,12 @@ export const COMPONENT_DEFINITIONS: TemplateComponentDefinition[] = [
         ],
       },
       {
+        key: "marginTop",
+        label: "Espacement haut (px)",
+        type: "number",
+        defaultValue: "16",
+      },
+      {
         key: "marginBottom",
         label: "Espacement bas (px)",
         type: "number",
@@ -227,6 +233,12 @@ export const COMPONENT_DEFINITIONS: TemplateComponentDefinition[] = [
         type: "number",
         defaultValue: "16",
       },
+      {
+        key: "coloredImage",
+        label: "Image colorée",
+        type: "switch",
+        defaultValue: "false",
+      },
     ],
   },
   {
@@ -284,12 +296,19 @@ export const COMPONENT_DEFINITIONS: TemplateComponentDefinition[] = [
         type: "number",
         defaultValue: "16",
       },
+      {
+        key: "reverse",
+        label: "Inverser le sens (image à droite)",
+        type: "switch",
+        defaultValue: "false",
+      },
     ],
   },
   {
     type: "link-youtube",
     label: "Musique (Youtube)",
     category: "Contenu",
+    fixed: "draft",
     properties: [
       {
         key: "link",
@@ -348,6 +367,45 @@ export const COMPONENT_DEFINITIONS: TemplateComponentDefinition[] = [
         label: "Largeur (px)",
         type: "number",
         defaultValue: "100",
+      },
+      {
+        key: "marginTop",
+        label: "Espacement haut (px)",
+        type: "number",
+        defaultValue: "16",
+      },
+      {
+        key: "marginBottom",
+        label: "Espacement bas (px)",
+        type: "number",
+        defaultValue: "16",
+      },
+    ],
+  },
+  {
+    type: "spoiler",
+    label: "Spoiler",
+    category: "Mise en page",
+    fixed: "draft",
+    properties: [
+      {
+        key: "title",
+        label: "Titre",
+        type: "text",
+        defaultValue: "Titre",
+      },
+      {
+        key: "content",
+        label: "Contenu",
+        type: "text-area",
+        defaultValue:
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+      },
+      {
+        key: "withTooltip",
+        label: "Afficher le message d'info",
+        type: "switch",
+        defaultValue: "true",
       },
       {
         key: "marginTop",

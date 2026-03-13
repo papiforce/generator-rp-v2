@@ -39,7 +39,7 @@ export function renderComponentHTML(
       } !important; margin: ${p.separatorMarginTop}px auto ${p.marginBottom}px;" />`;
 
     case "text-block":
-      return `<div style="font-size: ${globalSettings.fontSize}px; text-align: ${p.align}; margin: 0 0 ${p.marginBottom || "16"}px;">${p.text}</div>`;
+      return `<div style="font-size: ${globalSettings.fontSize}px; text-align: ${p.align}; margin: ${p.marginTop || "16"}px 0 ${p.marginBottom || "16"}px;">${p.text}</div>`;
 
     case "text-participants":
       return `<p class="${globalSettings.fontFamily}" style="margin-top: ${p.marginTop || "40"}px; font-size: ${
@@ -52,7 +52,7 @@ export function renderComponentHTML(
       return `<img src="${p.src}" alt="${p.alt}" style="width: ${p.width}%; max-width: ${globalSettings.width === "580" ? "300" : "520"}px; height; auto; margin: ${p.marginTop}px auto ${p.marginBottom}px; border: 1px solid ${isDarkMode ? "white" : "black"};"/>`;
 
     case "image-styled":
-      return `<img src="${p.src}" alt="${p.alt}" style="width: ${p.width}%; max-width: calc(100% - 80px); height: auto; object-fit: cover; filter: grayscale(90%); -webkit-mask-image: url('https://2img.net/image.noelshack.com/fichiers/2025/50/6/1765605039-output-onlinepngtools.png'); mask-image: url('https://2img.net/image.noelshack.com/fichiers/2025/50/6/1765605039-output-onlinepngtools.png'); -webkit-mask-size: cover; mask-size: cover; -webkit-mask-position: center; mask-position: center; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; -webkit-mask-size: 99%; mask-size: 99%; display: block; margin: ${p.marginTop}px auto ${p.marginBottom}px;">`;
+      return `<img src="${p.src}" alt="${p.alt}" style="width: ${p.width}%; max-width: calc(100% - 80px); height: auto; object-fit: cover; filter: grayscale(${p.coloredImage === "true" ? "0%" : "90%"}); -webkit-mask-image: url('https://2img.net/image.noelshack.com/fichiers/2025/50/6/1765605039-output-onlinepngtools.png'); mask-image: url('https://2img.net/image.noelshack.com/fichiers/2025/50/6/1765605039-output-onlinepngtools.png'); -webkit-mask-size: cover; mask-size: cover; -webkit-mask-position: center; mask-position: center; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; -webkit-mask-size: 99%; mask-size: 99%; display: block; margin: ${p.marginTop}px auto ${p.marginBottom}px;">`;
 
     case "speech": {
       const [characterColor, characterKey] = (
@@ -91,7 +91,7 @@ export function renderComponentHTML(
       const imageUrl = characterImages[characterKey] || characterImages.tyr;
       const characterName = characterKey || "tyr";
 
-      return `<div style="display: flex; gap: 8px; margin-top: ${p.marginTop}px; margin-bottom: ${p.marginBottom}px;"><img src="${imageUrl}" alt="${characterName}" style="object-fit: cover; object-position: center; min-width: 72px; max-width: 72px; height: 72px; border-radius: 50%; padding: 2px; border: 2px solid ${characterColor};" /><span style="color: ${characterColor}; font-size: ${globalSettings.fontSize}px; background-color: ${isDarkMode ? "#2a2c33" : "#ffffff"}; border: 2px solid ${isDarkMode ? "#33353a" : "#e7e7ee"}; border-radius: 8px 8px 8px 0%; font-weight: bold; padding: 8px 12px; width: 100%;">${p.speech}</span></div>`;
+      return `<div style="display: flex; flex-direction: ${p.reverse === "true" ? "row-reverse" : "row"}; gap: 8px; margin-top: ${p.marginTop}px; margin-bottom: ${p.marginBottom}px;"><img src="${imageUrl}" alt="${characterName}" style="object-fit: cover; object-position: center; min-width: 72px; max-width: 72px; height: 72px; border-radius: 50%; padding: 2px; border: 2px solid ${characterColor};" /><span style="color: ${characterColor}; font-size: ${globalSettings.fontSize}px; background-color: ${isDarkMode ? "#2a2c33" : "#ffffff"}; border: 2px solid ${isDarkMode ? "#33353a" : "#e7e7ee"}; border-radius: ${p.reverse === "true" ? "8px 8px 0px 8px" : "8px 8px 8px 0px"}; font-weight: bold; padding: 8px 12px; width: 100%;">${p.speech}</span></div>`;
     }
 
     case "link-youtube":
@@ -108,6 +108,24 @@ export function renderComponentHTML(
       return `<hr style="height: 1px; width: ${p.width}px; max-width: calc(100% - 80px); border-top-color: ${
         isDarkMode ? "#fff" : "#000"
       } !important; margin: ${p.marginTop}px auto ${p.marginBottom}px;" />`;
+
+    case "spoiler":
+      return `<details style="background-color: ${isDarkMode ? "#222327" : "#f5f5f5"}; border: 1px solid ${isDarkMode ? "#33353a" : "#e7e7ee"}; margin-top: ${p.marginTop || "16"}px; margin-bottom: ${p.marginBottom || "16"}px; border-radius: 8px; padding: 12px;">
+  <summary style="cursor: pointer; list-style: none; font-size: ${globalSettings.fontSize}px; font-weight: bold; color: ${isDarkMode ? "#ffffff" : "#000000"}; padding: 0px 12px; user-select: none; display: flex; align-items: center; gap: 16px; justify-content: space-between;">
+    ${p.title}
+
+    ${
+      p.withTooltip === "true" ?
+        `<span style="font-size: ${Number(globalSettings.fontSize) - 2}px !important; color: ${
+          isDarkMode ? "gray" : "#a0a0a0"
+        }; font-weight: 300; font-style: italic;">Cliquez pour ouvrir</span>`
+      : ""
+    }
+  </summary>
+  <div class="spoiler-content" style="background-color: ${isDarkMode ? "#2a2c33" : "#eaeaeaff"}; color: ${isDarkMode ? "#ffffff" : "#000000"}; border-radius: 4px; font-weight: 500; font-size: ${Number(globalSettings.fontSize) - 1}px; padding: 8px 12px; margin-top: 6px; border-top: none; display: flex; flex-direction: column;">
+    ${p.content}
+  </div>
+</details>`;
 
     case "footer":
       return `<p style="text-align: center; font-size: ${
@@ -140,14 +158,14 @@ export function generateFullHTML(
     isDarkMode ? "oklch(0.2223 0.006 271.1393)" : "#f2f2f2"
   }; margin: 0 auto; color: ${isDarkMode ? "#fff" : "#000"};`;
 
-  const theme =
-    isDarkMode ?
-      `.dark .codebox { background-color: #222327 !important; border: 1px solid #33353a !important; padding: 12px !important; } .dark .spoiler_title { color: #fff !important; font-size: ${globalSettings.fontSize}px !important; } .dark .spoiler_content { background-color: #2a2c33 !important; color: #fff !important; font-size: ${
-        Number(globalSettings.fontSize) - 1
-      }px !important; font-weight: 500; }`
-    : `.light .codebox { background-color: #f5f5f5 !important; border: 1px solid #e7e7ee !important; padding: 12px !important; } .light .spoiler_title { color: #000 !important; font-size: ${globalSettings.fontSize}px !important; } .light .spoiler_content { background-color: #eaeaeaff !important; color: #000 !important; font-weight: 500; font-size: ${
-        Number(globalSettings.fontSize) - 1
-      }px !important; }`;
+  // const theme =
+  //   isDarkMode ?
+  //     `.dark .codebox { background-color: #222327 !important; border: 1px solid #33353a !important; padding: 12px !important; } .dark .spoiler_title { color: #fff !important; font-size: ${globalSettings.fontSize}px !important; } .dark .spoiler_content { background-color: #2a2c33 !important; color: #fff !important; font-size: ${
+  //       Number(globalSettings.fontSize) - 1
+  //     }px !important; font-weight: 500; }`
+  //   : `.light .codebox { background-color: #f5f5f5 !important; border: 1px solid #e7e7ee !important; padding: 12px !important; } .light .spoiler_title { color: #000 !important; font-size: ${globalSettings.fontSize}px !important; } .light .spoiler_content { background-color: #eaeaeaff !important; color: #000 !important; font-weight: 500; font-size: ${
+  //       Number(globalSettings.fontSize) - 1
+  //     }px !important; }`;
 
   const withFirstLetterBig =
     globalSettings.firstLetter ?
@@ -176,7 +194,7 @@ export function generateFullHTML(
     : "") +
     footerHTML.join("\n");
 
-  return `<style>@import url('@import url('https://fonts.googleapis.com/css2?${isMontserrat ? "family=Montserrat:ital,wght@0,100..900;1,100..900&" : "family=Noto+Serif+JP:wght@200..900&"}family=Petrona:ital,wght@0,100..900;1,100..900&display=swap');'); .petrona { font-family: 'Petrona', serif; font-optical-sizing: auto; font-style: normal; } ${isMontserrat ? ".montserrat { font-family: 'Montserrat', sans-serif; font-optical-sizing: auto; font-style: normal; }" : ""} ${!isMontserrat ? ".noto-serif-jp { font-family: 'Noto Serif JP', serif; font-optical-sizing: auto; font-style: normal; }" : ""} .contentWrapper { margin: 32px 40px 56px; } ${theme}${withFirstLetterBig} @media (max-width: 720px) { .contentWrapper { margin: 8px 16px 56px; } .separator { width: 80%; } }</style><!--
+  return `<style>@import url('@import url('https://fonts.googleapis.com/css2?${isMontserrat ? "family=Montserrat:ital,wght@0,100..900;1,100..900&" : "family=Noto+Serif+JP:wght@200..900&"}family=Petrona:ital,wght@0,100..900;1,100..900&display=swap');'); .petrona { font-family: 'Petrona', serif; font-optical-sizing: auto; font-style: normal; } ${isMontserrat ? ".montserrat { font-family: 'Montserrat', sans-serif; font-optical-sizing: auto; font-style: normal; }" : ""} ${!isMontserrat ? ".noto-serif-jp { font-family: 'Noto Serif JP', serif; font-optical-sizing: auto; font-style: normal; }" : ""} .contentWrapper { margin: 32px 40px 56px; display: flex; flex-direction: column; } ${withFirstLetterBig} .spoiler-content img { width: 100%; max-width: calc(100% - 48px); max-height: 300px; margin: 0 auto; } @media (max-width: 720px) { .contentWrapper { margin: 8px 16px 56px; } .separator { width: 80%; } }</style><!--
 
 --><div class="${globalSettings.fontFamily}" style="position: relative; ${globalStyle}">${bodyContent}</div>`;
 }

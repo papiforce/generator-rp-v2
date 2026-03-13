@@ -21,6 +21,67 @@ import {
 import { Check, Copy, Save } from "lucide-react";
 import { useRef, useState } from "react";
 
+function formatHTML(html: string): string {
+  const blockTags = [
+    "div",
+    "p",
+    "hr",
+    "img",
+    "style",
+    "span",
+    "ul",
+    "ol",
+    "li",
+  ];
+
+  let code = html
+    .replace(/\n/g, "")
+    .replace(/\s{2,}/g, " ")
+    .trim();
+
+  const openRegex = new RegExp(`(<(?:${blockTags.join("|")})[ >/])`, "gi");
+  code = code.replace(openRegex, "<!--\n\n-->$1");
+
+  const closeRegex = new RegExp(`(<\\/(?:${blockTags.join("|")})>)`, "gi");
+  code = code.replace(closeRegex, "$1<!--\n\n-->");
+
+  code = code.replace(/^<!--\n\n-->/, "").replace(/<!--\n\n-->$/, "");
+  code = code.replace(/(<!--\n\n-->\s*){2,}/g, "<!--\n\n-->");
+
+  const lines = code.split("\n");
+  let indent = 0;
+  const result: string[] = [];
+
+  for (const raw of lines) {
+    const line = raw.trim();
+
+    if (line === "") {
+      result.push("");
+      continue;
+    }
+
+    if (line === "<!--" || line === "-->") {
+      result.push("  ".repeat(Math.max(indent, 0)) + line);
+      continue;
+    }
+
+    const startsWithClose = /^<\//.test(line);
+    const isSelfClosing =
+      /\/>$/.test(line) || /^<(hr|img|br|input|meta|link)\b/i.test(line);
+    const isInline = /^<(\w+)[^>]*>.*<\/\1>$/.test(line);
+
+    if (startsWithClose) indent--;
+
+    result.push("  ".repeat(Math.max(indent, 0)) + line);
+
+    if (!startsWithClose && !isSelfClosing && !isInline && /^<\w+/.test(line)) {
+      indent++;
+    }
+  }
+
+  return result.join("\n");
+}
+
 interface PropertiesPanelProps {
   selectedComponent: TemplateComponentInstance | null;
   components: TemplateComponentInstance[];
@@ -44,9 +105,10 @@ export default function PropertiesPanel({
   const [saveLabel, setSaveLabel] = useState<string | null>(null);
 
   const handleCopyHTML = async () => {
-    const html = generateFullHTML(globalSettings, components);
+    const raw = generateFullHTML(globalSettings, components);
+    const html = formatHTML(raw);
     try {
-      await navigator.clipboard.writeText(html.replaceAll("\n", ""));
+      await navigator.clipboard.writeText(html);
     } catch {
       // Fallback
       const textarea = document.createElement("textarea");
@@ -78,19 +140,33 @@ export default function PropertiesPanel({
             settings={globalSettings}
             templateName={templateName}
             onUpdate={onUpdateGlobalSettings}
-            onRenameTemplate={onRenameTemplate}
           />
         }
       </div>
 
       <div className="border-t p-3 flex flex-col gap-2 shrink-0">
-        <Button onClick={handleCopyHTML} variant="outline" className="w-full">
+        <Button
+          onClick={handleCopyHTML}
+          variant="outline"
+          className="w-full"
+          disabled={
+            !components.some((c) => c.type === "banner") ||
+            !components.some((c) => c.type === "footer")
+          }
+        >
           {copyLabel ?
             <Check className="h-4 w-4 mr-2" />
           : <Copy className="h-4 w-4 mr-2" />}
           {copyLabel ?? "Copier le code HTML"}
         </Button>
-        <Button onClick={handleSave} className="w-full">
+        <Button
+          onClick={handleSave}
+          className="w-full"
+          disabled={
+            !components.some((c) => c.type === "banner") ||
+            !components.some((c) => c.type === "footer")
+          }
+        >
           {saveLabel ?
             <Check className="h-4 w-4 mr-2" />
           : <Save className="h-4 w-4 mr-2" />}
@@ -259,24 +335,31 @@ function TextColorEditor({
   return (
     <div className="flex flex-col gap-1.5">
       {!withoutColor && (
-        <Select key={selectKey} onValueChange={applyColor}>
-          <SelectTrigger className="h-8 text-xs">
-            <SelectValue placeholder="Appliquer une couleur" />
-          </SelectTrigger>
-          <SelectContent>
-            {COLOR_OPTIONS.map((opt) => (
-              <SelectItem key={opt.label} value={opt.value}>
-                <span className="flex items-center gap-2">
-                  <span
-                    className="inline-block h-3 w-3 rounded-full shrink-0"
-                    style={{ backgroundColor: opt.value }}
-                  />
-                  {opt.label}
-                </span>
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <div className="flex gap-1.5">
+          <Select key={selectKey} onValueChange={applyColor}>
+            <SelectTrigger className="h-8 text-xs flex-1">
+              <SelectValue placeholder="Appliquer une couleur" />
+            </SelectTrigger>
+            <SelectContent>
+              {COLOR_OPTIONS.map((opt) => (
+                <SelectItem key={opt.label} value={opt.value}>
+                  <span className="flex items-center gap-2">
+                    <span
+                      className="inline-block h-3 w-3 rounded-full shrink-0"
+                      style={{ backgroundColor: opt.value }}
+                    />
+                    {opt.label}
+                  </span>
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <input
+            type="color"
+            className="h-8 w-8 rounded border p-0.5 cursor-pointer shrink-0"
+            onChange={(e) => applyColor(e.target.value)}
+          />
+        </div>
       )}
 
       <Textarea
@@ -293,12 +376,10 @@ function GlobalProperties({
   settings,
   templateName,
   onUpdate,
-  onRenameTemplate,
 }: {
   settings: Record<string, string>;
   templateName: string;
   onUpdate: (key: string, value: string) => void;
-  onRenameTemplate: (name: string) => void;
 }) {
   return (
     <div className="flex flex-col gap-4 p-3">
@@ -308,14 +389,10 @@ function GlobalProperties({
         paramètres globaux ci-dessous.
       </p>
 
-      <div className="flex flex-col gap-1.5">
+      {/* <div className="flex flex-col gap-1.5">
         <Label htmlFor="templateName">Nom du template</Label>
-        <Input
-          id="templateName"
-          value={templateName}
-          onChange={(e) => onRenameTemplate(e.target.value)}
-        />
-      </div>
+        <Input id="templateName" value={templateName} disabled />
+      </div> */}
 
       <div className="flex flex-col gap-1.5">
         <Label htmlFor="globalMode">Mode</Label>
@@ -380,6 +457,11 @@ function GlobalProperties({
       </div>
 
       <div className="h-px w-full bg-border my-2" />
+
+      <h2 className="text-base font-semibold">Propriétés de la fiche</h2>
+      <p className="text-xs text-muted-foreground">
+        Modifiez les paramètres de la fiche ci-dessous.
+      </p>
 
       <div className="flex flex-col gap-1.5">
         <Label htmlFor="characterName">Nom du personnage</Label>

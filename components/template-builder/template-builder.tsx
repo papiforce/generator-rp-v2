@@ -11,7 +11,9 @@ import {
   getDefinition,
 } from "@/lib/template-components";
 import { arrayMove } from "@dnd-kit/sortable";
+import { Eye } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
+import { Button } from "../ui/button";
 
 export default function TemplateBuilder() {
   const [modalOpen, setModalOpen] = useState(true);
@@ -103,19 +105,20 @@ export default function TemplateBuilder() {
     setGlobalSettings((prev) => ({ ...prev, [key]: value }));
   }, []);
 
-  const updateUrlParam = useCallback(
-    (name: string) => {
-      const slug = slugify(name);
-      const params = new URLSearchParams(window.location.search);
-      if (slug) {
-        params.set("save", slug);
-      } else {
-        params.delete("save");
-      }
-      window.history.replaceState(null, "", `${window.location.pathname}?${params.toString()}`);
-    },
-    [],
-  );
+  const updateUrlParam = useCallback((name: string) => {
+    const slug = slugify(name);
+    const params = new URLSearchParams(window.location.search);
+    if (slug) {
+      params.set("save", slug);
+    } else {
+      params.delete("save");
+    }
+    window.history.replaceState(
+      null,
+      "",
+      `${window.location.pathname}?${params.toString()}`,
+    );
+  }, []);
 
   const renameTemplate = useCallback(
     (newName: string) => {
@@ -202,12 +205,13 @@ export default function TemplateBuilder() {
               </span>
             )}
           </h1>
-          <button
+          <Button
             onClick={() => setModalOpen(true)}
-            className="text-sm px-3 py-1.5 rounded-md border hover:bg-muted transition-colors cursor-pointer"
+            className="text-sm px-3 py-1.5 rounded-md cursor-pointer"
           >
+            <Eye className="h-4 w-4" />
             Sauvegardes
-          </button>
+          </Button>
         </header>
 
         {/* 3-column layout */}

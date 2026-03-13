@@ -52,7 +52,7 @@ const SortableItem = React.memo(function SortableItem({
 }) {
   const def = getDefinition(comp.type);
   const isFixed = def?.fixed !== undefined;
-  const withPadding = ["text-block", "text-participants", "speech"];
+  const withPadding = ["text-block", "text-participants", "speech", "spoiler"];
 
   const {
     attributes,
@@ -90,8 +90,8 @@ const SortableItem = React.memo(function SortableItem({
         handleSelect();
       }}
       className={cn(
-        "relative cursor-pointer flex items-center gap-2 group outline-2 outline-transparent hover:outline-blue-400",
-        isSelected && "outline-blue-400",
+        "relative cursor-pointer flex items-center gap-2 group outline-2 outline-transparent hover:outline-blue-400 z-0 hover:z-10",
+        isSelected && "outline-blue-400 z-10",
         isDragging && "opacity-50",
         isFixed && "opacity-90",
       )}
@@ -138,7 +138,7 @@ const ComponentPreview = React.memo(
     return (
       <div className="flex flex-col gap-1">
         <div
-          className="pointer-events-none overflow-hidden [&_iframe]:pointer-events-auto"
+          className="pointer-events-none overflow-hidden [&_iframe]:pointer-events-auto [&_details]:pointer-events-auto"
           dangerouslySetInnerHTML={{ __html: html }}
         />
       </div>
