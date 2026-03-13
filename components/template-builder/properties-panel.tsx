@@ -104,7 +104,8 @@ export default function PropertiesPanel({
   const [saveLabel, setSaveLabel] = useState<string | null>(null);
 
   const handleCopyHTML = async () => {
-    const raw = generateFullHTML(globalSettings, components);
+    let raw = generateFullHTML(globalSettings, components);
+    raw = raw.replace(/<p[^>]*>\s*<br\s*\/?>\s*<\/p>/gi, "<br/>");
     const html = formatHTML(raw);
     try {
       await navigator.clipboard.writeText(html);
