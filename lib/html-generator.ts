@@ -39,7 +39,7 @@ export function renderComponentHTML(
       } !important; margin: ${p.separatorMarginTop}px auto ${p.marginBottom}px;" />`;
 
     case "text-block":
-      return `<div style="font-size: ${globalSettings.fontSize}px; text-align: ${p.align}; margin: ${p.marginTop || "16"}px 0 ${p.marginBottom || "16"}px; line-height: 1.25;">${p.text}</div>`;
+      return `<div style="font-size: ${globalSettings.fontSize}px; text-align: ${p.align}; margin: ${p.marginTop || "16"}px 0 ${p.marginBottom || "16"}px; line-height: 1.4;">${p.text}</div>`;
 
     case "text-participants":
       return `<p class="${globalSettings.fontFamily}" style="margin-top: ${p.marginTop || "40"}px; font-size: ${
