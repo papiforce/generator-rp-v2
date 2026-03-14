@@ -39,7 +39,20 @@ export function loadSave(slug: string): SaveData | null {
   const raw = localStorage.getItem(`template-${slug}`);
   if (!raw) return null;
   try {
-    return JSON.parse(raw);
+    const data: SaveData = JSON.parse(raw);
+    // Migrate components to match current definitions
+    data.components = data.components.map((comp) => {
+      const def = getDefinition(comp.type);
+      if (!def) return comp;
+
+      const migratedProps: Record<string, string> = {};
+      for (const propDef of def.properties) {
+        migratedProps[propDef.key] =
+          comp.props[propDef.key] ?? propDef.defaultValue;
+      }
+      return { ...comp, props: migratedProps };
+    });
+    return data;
   } catch {
     return null;
   }
