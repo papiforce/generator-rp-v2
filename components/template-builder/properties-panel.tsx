@@ -160,14 +160,7 @@ export default function PropertiesPanel({
           : <Copy className="h-4 w-4 mr-2" />}
           {copyLabel ?? "Copier le code HTML"}
         </Button>
-        <Button
-          onClick={handleSave}
-          className="w-full"
-          disabled={
-            !components.some((c) => c.type === "banner") ||
-            !components.some((c) => c.type === "footer")
-          }
-        >
+        <Button onClick={handleSave} className="w-full">
           {saveLabel ?
             <Check className="h-4 w-4 mr-2" />
           : <Save className="h-4 w-4 mr-2" />}

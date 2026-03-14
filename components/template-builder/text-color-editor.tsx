@@ -340,7 +340,7 @@ export default function TextColorEditor({
         onInput={handleInput}
         onMouseUp={saveSelection}
         onKeyUp={saveSelection}
-        className="min-h-24 max-h-90 overflow-y-scroll rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+        className="min-h-24 max-h-90 overflow-y-scroll rounded-md border border-input bg-transparent px-3 py-2 text-[11px] leading-normal shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
       />
     </div>
   );
