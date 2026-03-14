@@ -39,7 +39,7 @@ export function renderComponentHTML(
       } !important; margin: ${p.separatorMarginTop}px auto ${p.marginBottom}px;" />`;
 
     case "text-block":
-      return `<div style="font-size: ${globalSettings.fontSize}px; text-align: ${p.align}; margin: ${p.marginTop || "16"}px 0 ${p.marginBottom || "16"}px;">${p.text}</div>`;
+      return `<div style="font-size: ${globalSettings.fontSize}px; text-align: ${p.align}; margin: ${p.marginTop || "16"}px 0 ${p.marginBottom || "16"}px; line-height: 1.25;">${p.text}</div>`;
 
     case "text-participants":
       return `<p class="${globalSettings.fontFamily}" style="margin-top: ${p.marginTop || "40"}px; font-size: ${
@@ -186,7 +186,7 @@ export function generateFullHTML(
     : "") +
     footerHTML.join("\n");
 
-  return `<style>@import url('@import url('https://fonts.googleapis.com/css2?${isMontserrat ? "family=Montserrat:ital,wght@0,100..900;1,100..900&" : "family=Noto+Serif+JP:wght@200..900&"}family=Petrona:ital,wght@0,100..900;1,100..900&display=swap');'); .petrona { font-family: 'Petrona', serif; font-optical-sizing: auto; font-style: normal; } ${isMontserrat ? ".montserrat { font-family: 'Montserrat', sans-serif; font-optical-sizing: auto; font-style: normal; }" : ""} ${!isMontserrat ? ".noto-serif-jp { font-family: 'Noto Serif JP', serif; font-optical-sizing: auto; font-style: normal; }" : ""} .content-wrapper { margin: 0px 40px !important; display: flex; flex-direction: column; } ${withFirstLetterBig} .spoiler-content img { width: 100%; max-width: calc(100% - 48px); max-height: 300px; margin: 0 auto; } .content-wrapper p { font-size: ${globalSettings.fontSize}px !important; } @media (max-width: 720px) { .content-wrapper { margin: 0px 16px !important; } .separator { width: 80%; } }</style><!--
+  return `<style>@import url('@import url('https://fonts.googleapis.com/css2?${isMontserrat ? "family=Montserrat:ital,wght@0,100..900;1,100..900&" : "family=Noto+Serif+JP:wght@200..900&"}family=Petrona:ital,wght@0,100..900;1,100..900&display=swap');'); .petrona { font-family: 'Petrona', serif; font-optical-sizing: auto; font-style: normal; } ${isMontserrat ? ".montserrat { font-family: 'Montserrat', sans-serif; font-optical-sizing: auto; font-style: normal; }" : ""} ${!isMontserrat ? ".noto-serif-jp { font-family: 'Noto Serif JP', serif; font-optical-sizing: auto; font-style: normal; }" : ""} .content-wrapper { margin: 0px 40px !important; display: flex; flex-direction: column; } ${withFirstLetterBig} .spoiler-content img { width: 100%; max-width: calc(100% - 48px); max-height: 300px; margin: 0 auto; }</style><!--
 
 --><div class="${globalSettings.fontFamily}" style="position: relative; ${globalStyle}">${bodyContent}</div>`;
 }
