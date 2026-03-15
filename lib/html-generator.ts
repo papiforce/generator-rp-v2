@@ -10,6 +10,7 @@ export function renderComponentHTML(
   const def = getDefinition(comp.type);
   if (!def) return "";
   const isDarkMode = globalSettings.mode === "dark";
+  const isOutfit = globalSettings.titleFontFamily === "outfit";
 
   const p = comp.props;
 
@@ -25,7 +26,7 @@ export function renderComponentHTML(
         isDarkMode ? "rgba(26, 27, 30, 1)" : "rgba(242, 242, 242, 1)"
       } 0%, rgba(242, 242, 242, 0) 50%); opacity: ${p.gradient === "true" ? "1" : "0"}; width: 100%; height: 100%;"></div>${
         p.bannerText === "true" ?
-          `<div style="z-index: 1; padding: 8px; text-shadow: 1px 1px #000; color: #fff; display: flex; flex-direction: column; text-align: center;"><span style="font-family: 'Montserrat', sans-serif; font-size: 14px; text-transform: uppercase;">${globalSettings.characterName}</span><span style="font-family: 'Petrona', serif; font-size: 24px;">${globalSettings.title}</span>${p.hideTemporality === "true" ? "" : `<span style="font-family: 'Montserrat', sans-serif; font-size: 12px;">${globalSettings.timeType === "current" ? "Présent" : "Flashback"} - ${globalSettings.year}</span>`}</div>`
+          `<div style="z-index: 1; padding: 8px; text-shadow: 1px 1px #000; color: #fff; display: flex; flex-direction: column; text-align: center;"><span style="font-family: 'Montserrat', sans-serif; font-size: 14px; text-transform: uppercase;">${globalSettings.characterName}</span><span style="font-family: ${isOutfit ? "'Outfit', sans-serif;" : "'Petrona', serif"}; font-size: 24px;">${globalSettings.title}</span>${p.hideTemporality === "true" ? "" : `<span style="font-family: 'Montserrat', sans-serif; font-size: 12px;">${globalSettings.timeType === "current" ? "Présent" : "Flashback"} - ${globalSettings.year}</span>`}</div>`
         : ""
       }</div></div>`;
 
@@ -111,8 +112,8 @@ export function renderComponentHTML(
       } !important; margin: ${p.marginTop}px auto ${p.marginBottom}px;" />`;
 
     case "spoiler":
-      return `<details style="background-color: ${isDarkMode ? "#222327" : "#f5f5f5"}; border: 1px solid ${isDarkMode ? "#33353a" : "#e7e7ee"}; margin-top: ${p.marginTop || "16"}px; margin-bottom: ${p.marginBottom || "16"}px; border-radius: 8px; padding: 12px;">
-  <summary style="cursor: pointer; list-style: none; font-size: ${globalSettings.fontSize}px; font-weight: bold; color: ${isDarkMode ? "#ffffff" : "#000000"}; padding: 0px 12px; user-select: none; display: flex; align-items: center; gap: 16px; justify-content: space-between;">
+      return `<details style="background-color: ${isDarkMode ? "#222327" : "#f5f5f5"}; border: 1px solid ${isDarkMode ? "#33353a" : "#e7e7ee"}; margin-top: ${p.marginTop || "16"}px; margin-bottom: ${p.marginBottom || "16"}px; border-radius: 8px;">
+  <summary style="cursor: pointer; list-style: none; font-size: ${globalSettings.fontSize}px; font-weight: bold; color: ${isDarkMode ? "#ffffff" : "#000000"}; padding: 12px; user-select: none; display: flex; align-items: center; gap: 16px; justify-content: space-between;">
     ${p.title}
 
     ${
@@ -123,8 +124,10 @@ export function renderComponentHTML(
       : ""
     }
   </summary>
-  <div class="spoiler-content" style="background-color: ${isDarkMode ? "#2a2c33" : "#eaeaeaff"}; color: ${isDarkMode ? "#ffffff" : "#000000"}; border-radius: 4px; font-weight: 500; font-size: ${Number(globalSettings.fontSize) - 1}px; padding: 8px 12px; margin-top: 6px; border-top: none; display: flex; flex-direction: column;">
-    ${p.content}
+  <div class="spoiler-content" style="margin: 0px 12px 12px 12px;">
+    <div class="spoiler-inner" style="background-color: ${isDarkMode ? "#2a2c33" : "#eaeaeaff"}; color: ${isDarkMode ? "#ffffff" : "#000000"}; border-radius: 4px; font-weight: 500; font-size: ${Number(globalSettings.fontSize) - 1}px; padding: 8px 12px; border-top: none; display: flex; flex-direction: column;">
+      ${p.content}
+    </div>
   </div>
 </details>`;
 
@@ -154,6 +157,7 @@ export function generateFullHTML(
 ): string {
   const isDarkMode = globalSettings.mode === "dark";
   const isMontserrat = globalSettings.fontFamily === "montserrat";
+  const isOutfit = globalSettings.titleFontFamily === "outfit";
 
   const globalStyle = `max-width: ${globalSettings.width}px; background: ${
     isDarkMode ? "oklch(0.2223 0.006 271.1393)" : "#f2f2f2"
@@ -186,7 +190,7 @@ export function generateFullHTML(
     : "") +
     footerHTML.join("\n");
 
-  return `<style>@import url('@import url('https://fonts.googleapis.com/css2?${isMontserrat ? "family=Montserrat:ital,wght@0,100..900;1,100..900&" : "family=Noto+Serif+JP:wght@200..900&"}family=Petrona:ital,wght@0,100..900;1,100..900&display=swap');'); .petrona { font-family: 'Petrona', serif; font-optical-sizing: auto; font-style: normal; } ${isMontserrat ? ".montserrat { font-family: 'Montserrat', sans-serif; font-optical-sizing: auto; font-style: normal; }" : ""} ${!isMontserrat ? ".noto-serif-jp { font-family: 'Noto Serif JP', serif; font-optical-sizing: auto; font-style: normal; }" : ""} .content-wrapper { margin: 0px 40px !important; display: flex; flex-direction: column; } .content-wrapper p { font-size: ${globalSettings.fontSize}px !important; line-height: 1.5; } ${withFirstLetterBig} .spoiler-content img { width: 100%; max-width: calc(100% - 48px); max-height: 300px; margin: 0 auto; }</style><!--
+  return `<style>@import url('@import url('https://fonts.googleapis.com/css2?${isMontserrat ? "family=Montserrat:ital,wght@0,100..900;1,100..900&" : "family=Noto+Serif+JP:wght@200..900&"}&${isOutfit ? "family=Outfit:wght@100..900" : "family=Petrona:ital,wght@0,100..900;1,100..900"}&display=swap');'); ${isOutfit ? ".outfit { font-family: 'Outfit', sans-serif; font-optical-sizing: auto; font-style: normal; }" : ".petrona { font-family: 'Petrona', serif; font-optical-sizing: auto; font-style: normal; }"} ${isMontserrat ? ".montserrat { font-family: 'Montserrat', sans-serif; font-optical-sizing: auto; font-style: normal; }" : ""} ${!isMontserrat ? ".noto-serif-jp { font-family: 'Noto Serif JP', serif; font-optical-sizing: auto; font-style: normal; }" : ""} .content-wrapper { margin: 0px 40px !important; display: flex; flex-direction: column; } .content-wrapper p { font-size: ${globalSettings.fontSize}px !important; line-height: 1.5; } ${withFirstLetterBig} .spoiler-content img { width: 100%; max-width: calc(100% - 48px); max-height: 300px; margin: 0 auto; }</style><!--
 
 --><div class="${globalSettings.fontFamily}" style="position: relative; ${globalStyle}">${bodyContent}</div>`;
 }

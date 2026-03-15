@@ -31,6 +31,7 @@ export default function TemplateBuilder() {
   const [globalSettings, setGlobalSettings] = useState<Record<string, string>>({
     mode: "light",
     width: "580",
+    titleFontFamily: "petrona",
     fontFamily: "montserrat",
     fontSize: "11",
     firstLetter: "false",
@@ -165,6 +166,7 @@ export default function TemplateBuilder() {
       setGlobalSettings({
         mode: "light",
         width: "580",
+        titleFontFamily: "petrona",
         fontFamily: "montserrat",
         fontSize: "11",
         firstLetter: "false",

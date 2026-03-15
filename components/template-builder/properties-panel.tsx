@@ -106,7 +106,9 @@ export default function PropertiesPanel({
   const handleCopyHTML = async () => {
     let raw = generateFullHTML(globalSettings, components);
     raw = raw.replace(/<p[^>]*>\s*<br\s*\/?>\s*<\/p>/gi, "<br/>");
+    raw = raw.replace(/&nbsp;/g, "");
     const html = formatHTML(raw);
+
     try {
       await navigator.clipboard.writeText(html);
     } catch {
@@ -118,6 +120,7 @@ export default function PropertiesPanel({
       document.execCommand("copy");
       document.body.removeChild(textarea);
     }
+
     setCopyLabel("Copié !");
     setTimeout(() => setCopyLabel(null), 2000);
   };
@@ -335,6 +338,25 @@ function GlobalProperties({
           <SelectContent position="item-aligned">
             <SelectItem value="580">Normale</SelectItem>
             <SelectItem value="800">Large</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
+      <div className="flex flex-col gap-1.5">
+        <Label htmlFor="globalTitleFontFamily">
+          Police d'écriture du titre
+        </Label>
+        <Select
+          value={settings.titleFontFamily || "petrona"}
+          onValueChange={(value) => onUpdate("titleFontFamily", value)}
+          defaultValue={settings.titleFontFamily || "petrona"}
+        >
+          <SelectTrigger id="globalTitleFontFamily">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent position="item-aligned">
+            <SelectItem value="petrona">Petrona</SelectItem>
+            <SelectItem value="outfit">Outfit</SelectItem>
           </SelectContent>
         </Select>
       </div>
