@@ -100,9 +100,7 @@ export default function TextColorEditor({
   const emitChange = useCallback(() => {
     if (!editorRef.current) return;
     sanitizeParagraphs(editorRef.current);
-    // Replace &nbsp; (U+00A0) with normal spaces inserted by contentEditable
-    const html = editorRef.current.innerHTML.replace(/\u00A0/g, " ");
-    editorRef.current.innerHTML = html;
+    const html = editorRef.current.innerHTML;
     isInternalUpdate.current = true;
     onChange(html);
   }, [onChange, sanitizeParagraphs]);

@@ -23,8 +23,8 @@ export function renderComponentHTML(
       }url('${p.bannerUrl}'); background-size: cover !important; background-position: ${p.position} !important; filter: grayscale(${p.coloredBanner === "true" ? "0" : "90%"});`;
 
       return `<div class="montserrat" style="position: relative; max-width: ${globalSettings.width}px; background: #f2f2f2; margin: 0 auto; color: #000;"><div style="position: relative; display: flex; justify-content: center; align-items: center; height: 220px; ${bannerStyle}"><div style="position: absolute; bottom: 0; background: linear-gradient(360deg,${
-        isDarkMode ? "rgba(26, 27, 30, 1)" : "rgba(242, 242, 242, 1)"
-      } 0%, rgba(242, 242, 242, 0) 50%); opacity: ${p.gradient === "true" ? "1" : "0"}; width: 100%; height: 100%;"></div>${
+        isDarkMode ? "oklch(0.2223 0.006 271.1393)" : "rgba(242, 242, 242, 1)"
+      } 0%, rgba(242, 242, 242, 0) 100%); opacity: ${p.gradient === "true" ? "1" : "0"}; width: 100%; height: 100%;"></div>${
         p.bannerText === "true" ?
           `<div style="z-index: 1; padding: 8px; text-shadow: 1px 1px #000; color: #fff; display: flex; flex-direction: column; text-align: center;"><span style="font-family: 'Montserrat', sans-serif; font-size: 14px; text-transform: uppercase;">${globalSettings.characterName}</span><span style="font-family: ${isOutfit ? "'Outfit', sans-serif;" : "'Petrona', serif"}; font-size: 24px;">${globalSettings.title}</span>${p.hideTemporality === "true" ? "" : `<span style="font-family: 'Montserrat', sans-serif; font-size: 12px;">${globalSettings.timeType === "current" ? "Présent" : "Flashback"} - ${globalSettings.year}</span>`}</div>`
         : ""
