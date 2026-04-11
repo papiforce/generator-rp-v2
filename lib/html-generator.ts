@@ -3,6 +3,17 @@ import {
   getDefinition,
 } from "./template-components";
 
+function renderTextContent(
+  html: string,
+  baseStyle: string,
+  marginTop: string,
+  marginBottom: string,
+): string {
+  const content = (html || "").trim();
+  if (!content) return "";
+  return `<div style="${baseStyle} margin: ${marginTop}px 0 ${marginBottom}px 0;">${content}</div>`;
+}
+
 export function renderComponentHTML(
   globalSettings: Record<string, string>,
   comp: TemplateComponentInstance,
@@ -31,7 +42,7 @@ export function renderComponentHTML(
       }</div></div>`;
 
     case "place":
-      return `<p style="font-size: ${
+      return `div style="font-size: ${
         Number(globalSettings.fontSize) + 1
       }px; margin-top: ${p.marginTop}px; font-weight: 500; font-style: italic; text-align: center; color: ${
         isDarkMode ? "gray" : "#a0a0a0"
@@ -39,15 +50,22 @@ export function renderComponentHTML(
         isDarkMode ? "#fff" : "#000"
       } !important; margin: ${p.separatorMarginTop}px auto ${p.marginBottom}px;" />`;
 
-    case "text-block":
-      return `<div style="font-size: ${globalSettings.fontSize}px; text-align: ${p.align}; margin: ${p.marginTop || "16"}px 0 ${p.marginBottom || "16"}px; line-height: 1.4;">${p.text}</div>`;
+    case "text-block": {
+      const baseStyle = `font-size: ${globalSettings.fontSize}px; text-align: ${p.align}; line-height: 1.5;`;
+      return renderTextContent(
+        p.text || "",
+        baseStyle,
+        p.marginTop || "16",
+        p.marginBottom || "16",
+      );
+    }
 
     case "text-participants":
-      return `<p class="${globalSettings.fontFamily}" style="margin-top: ${p.marginTop || "40"}px; font-size: ${
+      return `<div class="${globalSettings.fontFamily}" style="margin-top: ${p.marginTop || "40"}px; font-size: ${
         Number(globalSettings.fontSize) - 1
       }px; font-style: italic; text-align: right; color: ${
         isDarkMode ? "gray" : "#a0a0a0"
-      }; text-transform: lowercase;">feat. ${p.text}.</p>`;
+      }; text-transform: lowercase;">feat. ${p.text}.</div>`;
 
     case "image-block":
       return `<img src="${p.src}" alt="${p.alt}" style="width: ${p.width}%; max-width: ${globalSettings.width === "580" ? "300" : "520"}px; height; auto; margin: ${p.marginTop}px auto ${p.marginBottom}px; border: 1px solid ${isDarkMode ? "white" : "black"};"/>`;
@@ -126,17 +144,17 @@ export function renderComponentHTML(
   </summary>
   <div class="spoiler-content" style="margin: 0px 12px 12px 12px;">
     <div class="spoiler-inner" style="background-color: ${isDarkMode ? "#2a2c33" : "#eaeaeaff"}; color: ${isDarkMode ? "#ffffff" : "#000000"}; border-radius: 4px; font-weight: 500; font-size: ${Number(globalSettings.fontSize) - 1}px; padding: 8px 12px; border-top: none; display: flex; flex-direction: column;">
-      ${p.content}
+      ${renderTextContent(p.content || "", `font-size: ${Number(globalSettings.fontSize) - 1}px; line-height: 1.5;`, "0", "0")}
     </div>
   </div>
 </details>`;
 
     case "footer":
-      return `<p style="text-align: center; font-size: ${
+      return `<div style="text-align: center; font-size: ${
         globalSettings.fontFamily === "montserrat" ?
           Number(globalSettings.fontSize) - 1
         : Number(globalSettings.fontSize)
-      }px; font-weight: 400; padding-bottom: 40px; margin: ${p.marginTop || "32"}px 0 0 0;">Bourbon | バーボン</p>${
+      }px; font-weight: 400; padding-bottom: 40px; margin: ${p.marginTop || "32"}px 0 0 0;">Bourbon | バーボン</div>${
         p.logo !== "none" ?
           `<img src="${p.logo}" alt="jolly roger" style="position: absolute; left: 16px; bottom: 16px; transform: rotate(-17deg); width: ${
             p.size || "64"
@@ -190,7 +208,7 @@ export function generateFullHTML(
     : "") +
     footerHTML.join("\n");
 
-  return `<style>@import url('@import url('https://fonts.googleapis.com/css2?${isMontserrat ? "family=Montserrat:ital,wght@0,100..900;1,100..900&" : "family=Noto+Serif+JP:wght@200..900&"}&${isOutfit ? "family=Outfit:wght@100..900" : "family=Petrona:ital,wght@0,100..900;1,100..900"}&display=swap');'); ${isOutfit ? ".outfit { font-family: 'Outfit', sans-serif; font-optical-sizing: auto; font-style: normal; }" : ".petrona { font-family: 'Petrona', serif; font-optical-sizing: auto; font-style: normal; }"} ${isMontserrat ? ".montserrat { font-family: 'Montserrat', sans-serif; font-optical-sizing: auto; font-style: normal; }" : ""} ${!isMontserrat ? ".noto-serif-jp { font-family: 'Noto Serif JP', serif; font-optical-sizing: auto; font-style: normal; }" : ""} .content-wrapper { margin: 0px 40px !important; display: flex; flex-direction: column; } .content-wrapper p { font-size: ${globalSettings.fontSize}px !important; line-height: 1.5; } ${withFirstLetterBig} .spoiler-content img { width: 100%; max-width: calc(100% - 48px); max-height: 300px; margin: 0 auto; }</style><!--
+  return `<style>@import url('@import url('https://fonts.googleapis.com/css2?${isMontserrat ? "family=Montserrat:ital,wght@0,100..900;1,100..900&" : "family=Noto+Serif+JP:wght@200..900&"}&${isOutfit ? "family=Outfit:wght@100..900" : "family=Petrona:ital,wght@0,100..900;1,100..900"}&display=swap');'); ${isOutfit ? ".outfit { font-family: 'Outfit', sans-serif; font-optical-sizing: auto; font-style: normal; }" : ".petrona { font-family: 'Petrona', serif; font-optical-sizing: auto; font-style: normal; }"} ${isMontserrat ? ".montserrat { font-family: 'Montserrat', sans-serif; font-optical-sizing: auto; font-style: normal; }" : ""} ${!isMontserrat ? ".noto-serif-jp { font-family: 'Noto Serif JP', serif; font-optical-sizing: auto; font-style: normal; }" : ""} .content-wrapper { margin: 0px 40px !important; display: flex; flex-direction: column; } ${withFirstLetterBig} .spoiler-content img { width: 100%; max-width: calc(100% - 48px); max-height: 300px; margin: 0 auto; }</style><!--
 
 --><div class="${globalSettings.fontFamily}" style="position: relative; ${globalStyle}">${bodyContent}</div>`;
 }

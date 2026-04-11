@@ -7,6 +7,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { normalizeLineBreaks } from "@/lib/normalize-html";
 import { Bold, Italic, Undo2, X } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
@@ -33,14 +34,12 @@ interface TextColorEditorProps {
   value: string;
   onChange: (value: string) => void;
   withoutColor?: boolean;
-  fontSize?: string;
 }
 
 export default function TextColorEditor({
   value,
   onChange,
   withoutColor = false,
-  fontSize,
 }: TextColorEditorProps) {
   const editorRef = useRef<HTMLDivElement>(null);
   const savedRangeRef = useRef<Range | null>(null);
@@ -49,11 +48,12 @@ export default function TextColorEditor({
   const [selectKey, setSelectKey] = useState(0);
   const [history, setHistory] = useState<string[]>([]);
 
-  // Set initial content
+  // Set initial content (normalize legacy <p>/<div> markup to <br> canonical form)
   useEffect(() => {
     if (editorRef.current) {
-      editorRef.current.innerHTML = value;
-      originalValueRef.current = value;
+      const normalized = normalizeLineBreaks(value);
+      editorRef.current.innerHTML = normalized;
+      originalValueRef.current = normalized;
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -63,8 +63,11 @@ export default function TextColorEditor({
       isInternalUpdate.current = false;
       return;
     }
-    if (editorRef.current && editorRef.current.innerHTML !== value) {
-      editorRef.current.innerHTML = value;
+    if (editorRef.current) {
+      const normalized = normalizeLineBreaks(value);
+      if (editorRef.current.innerHTML !== normalized) {
+        editorRef.current.innerHTML = normalized;
+      }
     }
   }, [value]);
 
@@ -80,34 +83,24 @@ export default function TextColorEditor({
     }
   }, []);
 
-  const sanitizeParagraphs = useCallback(
-    (container: HTMLElement) => {
-      container.querySelectorAll("p").forEach((p) => {
-        p.style.removeProperty("font-size");
-        p.style.removeProperty("font-weight");
-        p.style.removeProperty("font-family");
-        p.style.removeProperty("color");
-        p.style.setProperty("margin-bottom", "0");
-        // Clean empty style attribute
-        if (!p.getAttribute("style")?.trim()) {
-          p.removeAttribute("style");
-        }
-      });
-    },
-    [fontSize],
-  );
-
   const emitChange = useCallback(() => {
     if (!editorRef.current) return;
-    sanitizeParagraphs(editorRef.current);
-    const html = editorRef.current.innerHTML;
+    const html = normalizeLineBreaks(editorRef.current.innerHTML);
     isInternalUpdate.current = true;
     onChange(html);
-  }, [onChange, sanitizeParagraphs]);
+  }, [onChange]);
 
   const handleInput = useCallback(() => {
     emitChange();
   }, [emitChange]);
+
+  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      // Force a <br> insertion instead of letting the browser create a <p>/<div>
+      document.execCommand("insertLineBreak");
+    }
+  }, []);
 
   const undo = useCallback(() => {
     const prev = history;
@@ -339,9 +332,10 @@ export default function TextColorEditor({
         contentEditable
         suppressContentEditableWarning
         onInput={handleInput}
+        onKeyDown={handleKeyDown}
         onMouseUp={saveSelection}
         onKeyUp={saveSelection}
-        className="min-h-24 max-h-90 overflow-y-scroll rounded-md border border-input bg-transparent px-3 py-2 text-[11px] leading-normal shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+        className="min-h-24 max-h-90 overflow-y-scroll rounded-md border border-input bg-transparent px-3 py-2 text-[11px]! leading-normal shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
       />
     </div>
   );
